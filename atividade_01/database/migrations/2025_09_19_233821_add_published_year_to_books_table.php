@@ -11,14 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('books', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->integer('pages');
-            $table->foreignId('author_id')->constrained();
-            $table->foreignId('categories_id')->constrained();
-            $table->foreignId('publisher_id')->constrained();
-            $table->timestamps();
+        Schema::table('books', function (Blueprint $table) {  
+            $table->integer('published_year')->nullable(); 
         });
     }
 
