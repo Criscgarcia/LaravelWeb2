@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->integer('pages');
             $table->foreignId('author_id')->constrained();
-            $table->foreignId('categories_id')->constrained();
+            $table->foreignId('category_id')->constrained();
             $table->foreignId('publisher_id')->constrained();
             $table->timestamps();
         });
