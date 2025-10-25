@@ -4,13 +4,20 @@
 <div class="container">
     <h1 class="my-4">Lista de Authors</h1>
 
-    <a href="{{ route('categories.create') }}" class="btn btn-success mb-3">
+    <a href="{{ route('authors.create') }}" class="btn btn-success mb-3">
         <i class="bi bi-plus"></i> Adicionar Authors
     </a>
 
     @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
 

@@ -12,7 +12,7 @@ class PublisherController extends Controller
     public function index()
     {
         $publishers = Publisher::all();
-        return view('publishers.index', compact('publisher'));
+        return view('publishers.index', compact('publishers'));
     }
 
     // Mostra o formulário para criar uma nova categoria
@@ -60,6 +60,11 @@ class PublisherController extends Controller
     // Remove uma categoria do banco de dados
     public function destroy(Publisher $publisher)
     {
+        if ($publisher->books()->exists()) {
+            return redirect()->route('publishers.index')
+                ->with('error', 'Não é possível excluir esta editora porque existem livros vinculados a ela.');
+        }
+
         $publisher->delete();
 
         return redirect()->route('publishers.index')->with('success', 'Publisher excluída com sucesso.');

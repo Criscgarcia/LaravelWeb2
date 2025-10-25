@@ -25,6 +25,7 @@ class AuthorController extends Controller
     {
         $request->validate([
             'name' => 'required|string|unique:authors|max:255',
+           
         ]);
 
         Author::create($request->all());
@@ -59,7 +60,13 @@ class AuthorController extends Controller
     // Remove uma categoria do banco de dados
     public function destroy(Author $author)
     {
-        $Author->delete();
+
+          if ($author->books()->exists()) {
+            return redirect()->route('authors.index')
+                ->with('error', 'Não é possível excluir este autor porque existem livros vinculados a ele.');
+            }
+            
+        $author->delete();
 
         return redirect()->route('authors.index')->with('success', 'author excluído com sucesso.');
     }
