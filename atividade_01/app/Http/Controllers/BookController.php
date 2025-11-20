@@ -26,7 +26,14 @@ class BookController extends Controller
             'publisher_id' => 'required|exists:publishers,id',
             'author_id' => 'required|exists:authors,id',
             'category_id' => 'required|exists:categories,id',
+            'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
+
+        if ($request->hasFile('cover')) {
+            $request->merge([
+                'cover' => $request->file('cover')->store('books/covers', 'public')
+            ]);
+        }
 
         Book::create($request->all());
 
@@ -51,7 +58,14 @@ class BookController extends Controller
             'publisher_id' => 'required|exists:publishers,id',
             'author_id' => 'required|exists:authors,id',
             'category_id' => 'required|exists:categories,id',
+            'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
+
+        if ($request->hasFile('cover')) {
+            $request->merge([
+                'cover' => $request->file('cover')->store('books/covers', 'public')
+            ]);
+        }
 
         Book::create($request->all());
 
@@ -69,14 +83,36 @@ class BookController extends Controller
 
     public function update(Request $request, Book $book)
     {
-        $request->validate([
+
+         // DEBUG
+        \Log::info('=== INICIANDO UPDATE DO LIVRO ===');
+        \Log::info('Livro ID: ' . $book->id);
+        \Log::info('Tem arquivo cover?: ' . ($request->hasFile('cover') ? 'SIM' : 'NÃO'));
+        
+        if ($request->hasFile('cover')) {
+            \Log::info('Arquivo cover nome: ' . $request->file('cover')->getClientOriginalName());
+            \Log::info('Arquivo cover tamanho: ' . $request->file('cover')->getSize());
+        }
+
+
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'publisher_id' => 'required|exists:publishers,id',
             'author_id' => 'required|exists:authors,id',
             'category_id' => 'required|exists:categories,id',
+            'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        $book->update($request->all());
+        // Upload da nova imagem (se fornecida)
+        if ($request->hasFile('cover')) {
+            // Deletar imagem antiga
+            $book->deleteCover();
+            
+            // Fazer upload da nova
+            $validated['cover'] = $request->file('cover')->store('books/covers', 'public');
+        }
+
+        $book->update($validated);
 
         return redirect()->route('books.index')->with('success', 'Livro atualizado com sucesso.');
     }

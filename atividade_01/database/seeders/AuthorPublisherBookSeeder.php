@@ -24,8 +24,10 @@ class AuthorPublisherBookSeeder extends Seeder
                 Book::factory(10)->make([
                     'category_id' => Category::inRandomOrder()->first()->id,
                     'publisher_id' => $publisher->id,
+                    'cover' => $i <= 10 ? $this->fakeCover() : null // Apenas alguns têm capa
                 ])->toArray()
             );
         });
     }
+
 }

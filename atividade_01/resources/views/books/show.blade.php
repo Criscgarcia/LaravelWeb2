@@ -1,3 +1,7 @@
+@php
+    use Illuminate\Support\Facades\Storage;
+@endphp
+
 @extends('layouts.app')
 
 @section('content')
@@ -9,6 +13,28 @@
             <strong>Título:</strong> {{ $book->title }}
         </div>
         <div class="card-body">
+
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <strong>Capa do Livro:</strong><br>
+                        @if($book->cover)
+                            <img src="{{ Storage::url($book->cover) }}" 
+                                 alt="Capa de {{ $book->title }}" 
+                                 class="img-thumbnail mt-2" 
+                                 style="max-width: 200px; max-height: 300px;">
+                        @else
+                            <div class="mt-2">
+                                <img src="{{ asset('images/default-book-cover.jpg') }}" 
+                                     alt="Capa padrão" 
+                                     class="img-thumbnail" 
+                                     style="max-width: 200px; max-height: 300px;">
+                                <p class="text-muted small mt-1">Capa padrão</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+                <div class="col-md-8">
             <p><strong>Autor:</strong>
                 <a href="{{ route('authors.show', $book->author->id) }}">
                     {{ $book->author->name }}
