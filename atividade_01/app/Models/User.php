@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     public function books()
@@ -28,12 +29,16 @@ class User extends Authenticatable
     return $this->belongsToMany(Book::class, 'borrowings')
                 ->withPivot('id','borrowed_at', 'returned_at')
                 ->withTimestamps();
+                
     }
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
+    
+    public function borrowings()
+    {
+        return $this->hasMany(Borrowing::class);
+    }
+
+
+     
     protected $hidden = [
         'password',
         'remember_token',

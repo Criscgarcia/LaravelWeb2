@@ -38,6 +38,77 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
                         <!-- Authentication Links -->
+                        @auth
+                            <!-- Link para todos os usuários logados -->
+                            <li class="nav-item">
+                             @php
+                                // Verifica se a rota existe
+                                $hasBooksIndex = Route::has('books.index');
+                            @endphp
+                            @if($hasBooksIndex)
+                                <a class="nav-link" href="{{ route('books.index') }}">
+                                    <i class="bi bi-book"></i> Livros
+                                </a>
+
+                             @else
+                                {{-- Fallback para home --}}
+                                <a class="nav-link" href="{{ url('/') }}">
+                                    <i class="bi bi-book"></i> Livros
+                                </a>
+                            @endif
+                            </li>
+
+                            <!-- Links apenas para Bibliotecário e Admin -->
+                            @can('create', App\Models\Book::class)
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                        <i class="bi bi-plus-circle"></i> Novo Livro
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="{{ route('books.create.id') }}">
+                                            <i class="bi bi-123"></i> Por ID
+                                        </a>
+                                        <a class="dropdown-item" href="{{ route('books.create.select') }}">
+                                            <i class="bi bi-menu-down"></i> Por Select
+                                        </a>
+                                    </div>
+                                </li>
+
+                                <!-- Gerenciamento de Autores, Editoras, Categorias -->
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                        <i class="bi bi-gear"></i> Gerenciar
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="{{ route('authors.index') }}">
+                                            <i class="bi bi-person"></i> Autores
+                                        </a>
+                                        <a class="dropdown-item" href="{{ route('publishers.index') }}">
+                                            <i class="bi bi-building"></i> Editoras
+                                        </a>
+                                        <a class="dropdown-item" href="{{ route('categories.index') }}">
+                                            <i class="bi bi-tags"></i> Categorias
+                                        </a>
+                                    </div>
+                                </li>
+
+                                <!-- Empréstimos para bibliotecários -->
+                               
+                            @endcan
+
+                             <!-- Links apenas para Admin -->
+                            @can('viewAny', App\Models\User::class)
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('users.index') }}">
+                                        <i class="bi bi-people"></i> Usuários
+                                    </a>
+                                </li>
+                            @endcan
+                        @endauth  
+                    </ul>
+                    <!-- Right Side Of Navbar -->
+                    <ul class="navbar-nav ms-auto">
+                        <!-- Authentication Links -->
                         @guest
                             @if (Route::has('login'))
                                 <li class="nav-item">
@@ -51,16 +122,33 @@
                                 </li>
                             @endif
                         @else
+                            <!-- ==================== ADICIONE BADGE DE PAPEL ==================== -->
+                            <li class="nav-item">
+                                <span class="nav-link badge 
+                                    @if(Auth::user()->role === 'admin') bg-danger
+                                    @elseif(Auth::user()->role === 'bibliotecario') bg-warning text-dark
+                                    @else bg-info @endif">
+                                    {{ Auth::user()->role }}
+                                </span>
+                            </li>
+                            <!-- ==================== FIM DO BADGE ==================== -->
+                            
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
+                                    <i class="bi bi-person-circle"></i> {{ Auth::user()->name }}
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <!-- ==================== ADICIONE LINK DO PERFIL ==================== -->
+                                    
+                                      
+                                    <div class="dropdown-divider"></div>
+                                    <!-- ==================== FIM DOS LINKS ==================== -->
+                                    
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
+                                        <i class="bi bi-box-arrow-right"></i> {{ __('Logout') }}
                                     </a>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">

@@ -15,12 +15,14 @@ class BookController extends Controller
     // Formulário com input de ID
     public function createWithId()
     {
+        $this->authorize('create', Book::class);
         return view('books.create-id');
     }
 
     // Salvar livro com input de ID
     public function storeWithId(Request $request)
     {
+        $this->authorize('create', Book::class);
         $request->validate([
             'title' => 'required|string|max:255',
             'publisher_id' => 'required|exists:publishers,id',
@@ -47,12 +49,14 @@ class BookController extends Controller
         $authors = Author::all();
         $categories = Category::all();
 
+        $this->authorize('create', Book::class);
         return view('books.create-select', compact('publishers', 'authors', 'categories'));
     }
 
     // Salvar livro com input select
     public function storeWithSelect(Request $request)
     {
+        $this->authorize('create', Book::class);
         $request->validate([
             'title' => 'required|string|max:255',
             'publisher_id' => 'required|exists:publishers,id',
@@ -74,6 +78,7 @@ class BookController extends Controller
 
     public function edit(Book $book)
     {
+        $this->authorize('update', $book);
         $publishers = Publisher::all();
         $authors = Author::all();
         $categories = Category::all();
@@ -83,18 +88,7 @@ class BookController extends Controller
 
     public function update(Request $request, Book $book)
     {
-
-         // DEBUG
-        \Log::info('=== INICIANDO UPDATE DO LIVRO ===');
-        \Log::info('Livro ID: ' . $book->id);
-        \Log::info('Tem arquivo cover?: ' . ($request->hasFile('cover') ? 'SIM' : 'NÃO'));
-        
-        if ($request->hasFile('cover')) {
-            \Log::info('Arquivo cover nome: ' . $request->file('cover')->getClientOriginalName());
-            \Log::info('Arquivo cover tamanho: ' . $request->file('cover')->getSize());
-        }
-
-
+        $this->authorize('update', $book);
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'publisher_id' => 'required|exists:publishers,id',
@@ -139,6 +133,7 @@ class BookController extends Controller
      
     public function destroy(Book $book)
     {
+    $this->authorize('delete', $book);
     $book->delete();
 
     return redirect()->route('books.index')->with('success', 'Livro deletado com sucesso.');
