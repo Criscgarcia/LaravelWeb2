@@ -12,18 +12,15 @@ use App\Http\Controllers\HomeController;
 // Rota inicial pública
 Route::get('/', [BookController::class, 'index'])->name('home');
 
-// Resources públicos (todos podem ver)
-Route::resource('categories', CategoryController::class)->only(['index', 'show']);
-Route::resource('authors', AuthorController::class)->only(['index', 'show']);
-Route::resource('publishers', PublisherController::class)->only(['index', 'show']);
+// Resources públicos 
+Route::resource('categories', CategoryController::class);
+Route::resource('authors', AuthorController::class);
+Route::resource('publishers', PublisherController::class);
 
 Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index']);
-
-// ======================
 // ROTAS PROTEGIDAS POR PAPEL
-// ======================
 
 // ROTAS PARA BIBLIOTECÁRIO E ADMIN
 Route::middleware(['auth', 'role:admin,bibliotecario'])->group(function () {
